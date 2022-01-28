@@ -42,9 +42,6 @@ public class Game {
 
 
     public Game() {
-
-        // Add a way to load your save
-
         gameMap.addRoomToMap(center, gameMap.generateNearbyRoomHashMap("west", market, "east", eastEntrance, "south", mainRoad, "north", castle));
         gameMap.addRoomToMap(castle, gameMap.generateNearbyRoomHashMap("south", center));
         gameMap.addRoomToMap(market, gameMap.generateNearbyRoomHashMap("east", center, "west", westEntrance, "north", inn));
@@ -63,13 +60,13 @@ public class Game {
         eastEntrance.addBlockedPath("east", "As you try to go through the east Entrance, a guard pipes up and says \"Hey! No adventurers are allowed this way, the road has been deemed too dangerous.\"");
 
         buildConversations();
-        System.out.println("Tip: Make sure to start your commands with a verb!");
     }
 
     public void run() throws Exception {
         boolean stillRunning;
         stillRunning = mainMenu();
         if (stillRunning) {
+            System.out.println("Tip: Make sure to start your commands with a verb!");
             System.out.print(player.getCurrentRoom().getDescription());
         }
         while(stillRunning) {
@@ -96,7 +93,7 @@ public class Game {
                     player = new Player("Mage", gameMap.findRoom(roomName)); // Must check to see if the room isn't empty
                     return true;
                 }
-                case "New Game" -> {
+                case "new" -> {
                     String save = gson.toJson(new Message("User", "Town Center"));
                     player = new Player("Mage", center);
                     Requester.post(save);
