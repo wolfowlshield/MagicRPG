@@ -22,7 +22,7 @@ public class Requester {
         }
     }
 
-    public static void get() throws Exception {
+    public static String get() throws Exception {
         Request request = new Request.Builder()
                 .url(currentDeployment)
                 .build();
@@ -37,7 +37,7 @@ public class Requester {
             }
              */
 
-            System.out.println(response.body().string());
+            return response.body().string();
         }
     }
 }

@@ -35,9 +35,11 @@ public class Game {
     NPC guide = new NPC("Patrick", center, hello);
     NPC guard = new NPC("Guard", westEntrance, guardDuty, false);
 
+    Player player;
+
     RoomMap gameMap = new RoomMap();
     SentenceDeconstructor sentence = new SentenceDeconstructor();
-    Player player = new Player("Mage", center);
+
 
     public Game() {
 
@@ -78,8 +80,9 @@ public class Game {
         }
     }
 
-    public boolean mainMenu() throws IOException {
+    public boolean mainMenu() throws Exception {
         while(true) {
+            // Add a Title sout here
             System.out.println("- New Game \n"
             + "- Continue\n"
             + "- Exit");
@@ -89,11 +92,13 @@ public class Game {
                     return false;
                 }
                 case "continue" -> {
-                    // Get Player position
+                    String roomName = Requester.get();
+                    player = new Player("Mage", gameMap.findRoom(roomName)); // Must check to see if the room isn't empty
                     return true;
                 }
                 case "New Game" -> {
                     String save = gson.toJson(new Message("User", "Town Center"));
+                    player = new Player("Mage", center);
                     Requester.post(save);
                     return true;
                 }

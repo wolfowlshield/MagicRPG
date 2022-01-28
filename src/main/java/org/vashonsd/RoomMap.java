@@ -16,6 +16,15 @@ public class RoomMap {
         addRoomToMap(empty, new HashMap<>());
     }
 
+    public Room findRoom(String roomName) {
+        for (Room r: fullRoomMap.keySet()) {
+            if (roomName.equals(r.toString())) {
+                return r;
+            }
+        }
+        return empty;
+    }
+
     public void addRoomToMap(Room room, HashMap<String, Room> nearbyRooms) {
         fullRoomMap.put(room, nearbyRooms);
     }
