@@ -38,16 +38,19 @@ public class NPC extends Actor {
             if (currentTopic.getNextTopicMap().isEmpty()) {
                 stillTalking = false;
             } else {
-                for (String str : currentTopic.getNextTopicMap().keySet()) {
-                    System.out.println("- " + str);
-                }
-                String userResponse = input.nextLine().toLowerCase(Locale.ROOT);
-                for (String str : currentTopic.getNextTopicMap().keySet()) {
-                    if (userResponse.equals(str.toLowerCase(Locale.ROOT))) {
-                        currentTopic = currentTopic.getNextTopicMap().get(userResponse);
-                        break;
-                    }
-                }
+                nextTopic(input.nextLine().toLowerCase(Locale.ROOT));
+            }
+        }
+    }
+    public Topic getCurrentTopic() {
+        return currentTopic;
+    }
+
+    public void nextTopic(String nextTopic) {
+        for (String str : currentTopic.getNextTopicMap().keySet()) {
+            if (nextTopic.equals(str.toLowerCase(Locale.ROOT))) {
+                currentTopic = currentTopic.getNextTopicMap().get(nextTopic);
+                break;
             }
         }
     }

@@ -9,7 +9,7 @@ public class SentenceDeconstructor {
 
     String userSentence;
 
-    String verb;
+    String firstWord;
     String directObject;
     String prepSubject; // Subject After a preposition
 
@@ -31,7 +31,7 @@ public class SentenceDeconstructor {
                     userSentence = userSentence.replace(i, ""); // Removes helping words
                 }
             }
-            verb = userSentence.substring(0, userSentence.indexOf(' '));
+            firstWord = userSentence.substring(0, userSentence.indexOf(' '));
             directObject = userSentence.substring(userSentence.indexOf(' ') + 1); // The word the happens immediately after the verb (Which should be the first word)
 
             if (userSentence.contains("with ")) { // Check for prepositions
@@ -40,14 +40,14 @@ public class SentenceDeconstructor {
                 prepSubject = null;
             }
         } else { // If it's just a one word command
-            verb = userSentence;
+            firstWord = userSentence;
             directObject = null;
             prepSubject = null;
         }
     }
 
-    public String getVerb() {
-        return verb;
+    public String getFirstWord() {
+        return firstWord;
     }
 
     public String getDirectObject() {

@@ -84,7 +84,7 @@ public class Game {
             + "- Continue\n"
             + "- Exit");
             sentence.setUserSentence(input.nextLine());
-            switch (sentence.getVerb()) {
+            switch (sentence.getFirstWord()) {
                 case "exit" -> {
                     return false;
                 }
@@ -105,7 +105,7 @@ public class Game {
 
     public boolean doCommand(SentenceDeconstructor sentence) throws IOException {
         boolean stillRunning = true;
-        switch (sentence.getVerb()) {
+        switch (sentence.getFirstWord()) {
             case "map" -> System.out.println(gameMap.generateVisualMap(player.getCurrentRoom()));
             case "quit","exit" -> stillRunning = false;
             case "head", "move", "go" -> {
@@ -124,7 +124,13 @@ public class Game {
             case "talk" -> {
                 NPC talker = player.getCurrentRoom().findNPC(sentence.getDirectObject());
                 if (talker != null) {
-                    talker.startConversation();
+                    boolean stillTalking = true;
+
+                    talkTo(talker);
+                    while (stillTalking) {
+                        stillTalking = changeTopic(talker, input.nextLine().toLowerCase(Locale.ROOT));
+                        talkTo(talker);
+                    }
                 } else {
                     System.out.println("There's no one with that name in this room");
                 }
@@ -143,6 +149,23 @@ public class Game {
             default -> System.out.println("I don't know that command");
         }
         return stillRunning;
+    }
+
+    public void talkTo(NPC person) {
+
+        Topic currentTopic = person.getCurrentTopic();
+        System.out.println("\"" + currentTopic.getText() + "\"");
+        for (String str : currentTopic.getNextTopicMap().keySet()) {
+            System.out.println("- " + str);
+        }
+    }
+
+    public boolean changeTopic(NPC person, String userResponse) {
+        person.nextTopic(userResponse);
+        if (person.getCurrentTopic().getNextTopicMap().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     public void buildConversations() {
