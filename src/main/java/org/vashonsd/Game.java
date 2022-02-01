@@ -27,6 +27,8 @@ public class Game {
     Room docks = new Room("Docks");
     Room beach = new Room("Beach");
 
+    Item basket = new Item("basket", center);
+
     Topic hello = new Topic("Hello There!");
     Topic guardDuty = new Topic("Another lazy day of guard duty.");
     Topic backstory = new Topic("I come from the village west of here.");
@@ -35,7 +37,7 @@ public class Game {
     NPC guide = new NPC("Patrick", center, hello);
     NPC guard = new NPC("Guard", westEntrance, guardDuty, false);
 
-    Player player;
+    Player player = new Player("Mage", center);
 
     RoomMap gameMap = new RoomMap();
     SentenceDeconstructor sentence = new SentenceDeconstructor();
@@ -126,10 +128,10 @@ public class Game {
                 if (talker != null) {
                     boolean stillTalking = true;
 
-                    talkTo(talker);
+                    System.out.println(talkTo(talker));
                     while (stillTalking) {
                         stillTalking = changeTopic(talker, input.nextLine().toLowerCase(Locale.ROOT));
-                        talkTo(talker);
+                        System.out.println(talkTo(talker));
                     }
                 } else {
                     System.out.println("There's no one with that name in this room");
@@ -151,13 +153,15 @@ public class Game {
         return stillRunning;
     }
 
-    public void talkTo(NPC person) {
+    public String talkTo(NPC person) {
 
         Topic currentTopic = person.getCurrentTopic();
-        System.out.println("\"" + currentTopic.getText() + "\"");
+        String result;
+        result = "\"" + currentTopic.getText() + "\"";
         for (String str : currentTopic.getNextTopicMap().keySet()) {
-            System.out.println("- " + str);
+            result = result.concat("\n- " + str);
         }
+        return result;
     }
 
     public boolean changeTopic(NPC person, String userResponse) {

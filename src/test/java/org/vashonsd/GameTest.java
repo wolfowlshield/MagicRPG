@@ -3,6 +3,7 @@ package org.vashonsd;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.security.Guard;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,4 +63,33 @@ public class GameTest {
                 "|            |            | Main Road  |\n" +
                 "|------------|------------|------------|\n", game.gameMap.generateVisualMap(game.player.getCurrentRoom()));
     }
+
+    @Test
+    public void testConversations() {
+        Game game = new Game();
+
+        NPC talker = game.guard;
+        assertEquals("\"Another lazy day of guard duty.\"\n" + "- leave", game.talkTo(talker));
+        game.changeTopic(talker, "leave");
+        assertEquals("\"See ya!\"", game.talkTo(talker));
+
+        talker = game.guide;
+        assertEquals("\"Hello There!\"\n- backstory\n- leave", game.talkTo(talker));
+        game.changeTopic(talker, "backstory");
+        assertEquals("\"I come from the village west of here.\"\n- leave", game.talkTo(talker));
+        game.changeTopic(talker, "GIve ME all Of Your MONEY!");
+        assertEquals("\"I come from the village west of here.\"\n- leave", game.talkTo(talker));
+        game.changeTopic(talker, "leave");
+        assertEquals("\"See ya!\"", game.talkTo(talker));
+    }
+
+    @Test
+    public void testRoomSummary() {
+        Game game = new Game();
+        assertEquals("""
+                You are standing in the Town Center
+                There is a basket
+                You see Patrick""", game.center.getSummary());
+    }
 }
+
