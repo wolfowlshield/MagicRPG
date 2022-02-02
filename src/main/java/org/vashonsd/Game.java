@@ -28,6 +28,7 @@ public class Game {
     Room beach = new Room("Beach");
 
     Item basket = new Item("basket", center);
+    Item letter = new Item("letter", market);
 
     Topic hello = new Topic("Hello There!");
     Topic guardDuty = new Topic("Another lazy day of guard duty.");
@@ -61,6 +62,8 @@ public class Game {
         center.addBlockedPath("north", "The gates to the castle are locked.");
         eastEntrance.addBlockedPath("east", "As you try to go through the east Entrance, a guard pipes up and says \"Hey! No adventurers are allowed this way, the road has been deemed too dangerous.\"");
 
+        letter.makeReadable("Thanks for playing this game");
+
         buildConversations();
     }
 
@@ -70,12 +73,12 @@ public class Game {
         if (stillRunning) {
             System.out.println("Tip: Make sure to start your commands with a verb!");
             System.out.print(player.getCurrentRoom().getDescription());
-        }
-        while(stillRunning) {
-            System.out.println(player.getCurrentRoom().getSummary());
-            System.out.println("What do you want to do?");
-            sentence.setUserSentence(input.nextLine().toLowerCase(Locale.ROOT));
-            stillRunning = doCommand(sentence);
+            while(stillRunning) {
+                System.out.println(player.getCurrentRoom().getSummary());
+                System.out.println("What do you want to do?");
+                sentence.setUserSentence(input.nextLine().toLowerCase(Locale.ROOT));
+                stillRunning = doCommand(sentence);
+            }
         }
     }
 
@@ -109,6 +112,7 @@ public class Game {
         boolean stillRunning = true;
         switch (sentence.getFirstWord()) {
             case "map" -> System.out.println(gameMap.generateVisualMap(player.getCurrentRoom()));
+            case "inventory" -> System.out.print(player.getInventoryString());
             case "quit","exit" -> stillRunning = false;
             case "head", "move", "go" -> {
                 Room nextRoom = gameMap.getFullRoomMap().get(player.getCurrentRoom()).get(sentence.getDirectObject());
@@ -140,12 +144,32 @@ public class Game {
             case "check" -> {
                 switch(sentence.getDirectObject()) { // Nested Switch cases... Nice
                     case "map" -> System.out.println(gameMap.generateVisualMap(player.getCurrentRoom()));
-                    case "inventory" -> System.out.println("You are holding nothing");
+                    case "inventory" -> System.out.print(player.getInventoryString());
                 }
             }
             case "save" -> {
                 String save = gson.toJson(new Message("User", player.getCurrentRoom().toString()));
                 Requester.post(save);
+            }
+            case "pick", "grab" -> {
+                Item beingGrabbed = player.getCurrentRoom().findItem(sentence.getDirectObject());
+
+                if (beingGrabbed != null) {
+                    player.addToInventory(beingGrabbed);
+                    player.getCurrentRoom().getItems().remove(beingGrabbed);
+                    System.out.println("You picked up " + beingGrabbed);
+                } else {
+                    System.out.println("I can't find that item");
+                }
+
+            }
+            case "read" -> {
+                Item beingRead = player.findItemInInventory(sentence.getDirectObject());
+                if (beingRead != null) {
+                    System.out.println(beingRead.readThis());
+                } else {
+                    System.out.println("I couldn't that item");
+                }
             }
             // add a way to sleep
             default -> System.out.println("I don't know that command");

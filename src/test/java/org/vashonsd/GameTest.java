@@ -91,5 +91,18 @@ public class GameTest {
                 There is a basket
                 You see Patrick""", game.center.getSummary());
     }
+
+    @Test
+    public void testGrabItem() throws IOException {
+        Game game = new Game();
+        SentenceDeconstructor sentence = new SentenceDeconstructor();
+
+        assertEquals("You are holding nothing\n", game.player.getInventoryString());
+
+        sentence.setUserSentence("grab the basket");
+        game.doCommand(sentence);
+
+        assertTrue(game.player.isItemInInventory(game.basket));
+    }
 }
 
